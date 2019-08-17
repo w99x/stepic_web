@@ -5,4 +5,4 @@ mkdir --parents /home/box/web/public/js
 mkdir --parents /home/box/web/uploads
 mkdir --parents /home/box/web/etc
 
-cp -rf ./nginx.conf /etc/nginx/
+cp -rf ./nginx.conf /home/box/web/etc/
