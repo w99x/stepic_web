@@ -11,3 +11,6 @@ cp -rf ./nginx.conf $etcdir/
 sudo ln -sf $etcdir/hello.py  /etc/gunicorn.d/hello.py
 sudo ln -sf $etcdir/nginx.conf /etc/nginx/sites-enabled/default/nginx.conf
 
+sudo /etc/init.d/nginx restart
+sudo /etc/init.d/gunicorn restart
+sudo /etc/init.d/mysql start
