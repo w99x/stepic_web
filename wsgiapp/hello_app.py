@@ -1,5 +1,4 @@
 def wsgi_application(environ, start_response):     
-    # бизнес-логика      
     query = environ['QUERY_STRING']
     body = ""
     for q in query:
