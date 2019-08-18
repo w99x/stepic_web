@@ -1,11 +1,13 @@
 #!/bin/bash
-mkdir --parents /home/box/web
-mkdir --parents /home/box/etc
+webdir=/home/box/web
+etcdir=/home/box/etc
+mkdir --parents $webdir
+mkdir --parents $etcdir
 
-cp -rf ./hello_app.py /home/box/web/hello.py
-cp -rf ./hello_conf.py /home/box/web/etc/hello.py
-cp -rf ./nginx.conf /home/box/web/etc/
+cp -rf ./hello_app.py $webdir/hello.py
+cp -rf ./hello_conf.py $etcdir/hello.py
+cp -rf ./nginx.conf $etcdir/
 
-sudo ln -sf /home/box/web/etc/hello.py  /etc/gunicorn.d/hello.py
-sudo ln -sf /home/box/web/etc/nginx.conf /etc/nginx/sites-enabled/default
+sudo ln -sf $etcdir/hello.py  /etc/gunicorn.d/hello.py
+sudo ln -sf $etcdir/nginx.conf /etc/nginx/sites-enabled/default/nginx.conf
 
