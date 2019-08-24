@@ -12,6 +12,5 @@ sudo ln -sf $etcdir/gunicorn.py  /etc/gunicorn.d/gunicorn.py
 sudo ln -sf $etcdir/nginx.conf /etc/nginx/sites-enabled/default
 
 sudo /etc/init.d/nginx restart
-sudo /etc/init.d/gunicorn restart 
-#$webdir/ask/ask/wsgi.py -c $etcdir/gunicorn.py 
-sudo /etc/init.d/mysql start
+( cd ask && gunicorn  ask.wsgi:application -c $etcdir/gunicorn.py )
+sudo /etc/init.d/mysql restart
