@@ -26,7 +26,7 @@ def main(request):
 
 @require_GET
 def popular(request):
-    questions = Question.objects.new()     
+    questions = Question.objects.popular()     
     return get_question_paginated_render(request, '/popular/?page=', questions) 
 
 @require_GET
