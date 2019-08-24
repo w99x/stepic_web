@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-class QuestionManager:
+class QuestionManager(models.Manager):
     def new(self):
         return self.order_by('-added_at')
 
