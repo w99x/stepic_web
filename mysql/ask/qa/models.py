@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+class QuestionManager:
+    def new(self):
+        return self.order_by('-added_at')
+
+    def popular(self):
+        return self.order_by('-rating')
+
+
+
 class Question(models.Model):
     title = models.CharField(max_length=250)
     text = models.TextField()
@@ -10,14 +19,6 @@ class Question(models.Model):
     likes = models.ManyToManyField(User, related_name='question_like_user')
     class Meta:
         ordering = ['-rating']
-    
-    class QuestionManager:
-        def new(self):
-            return self.order_by('-added_at')
-
-        def popular(self):
-            return self.order_by('-rating')
-
     objects = QuestionManager()
 
 class Answer(models.Model):
