@@ -1,0 +1,1 @@
+gunicorn  ask.wsgi:application -c $etcdir/gunicorn.py
