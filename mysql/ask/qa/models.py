@@ -23,5 +23,5 @@ class QuestionManager():
 class Answer(models.Model):
     text = models.TextField()
     added_at = models.DateTimeField()
-    question = models.ForeighnKey(Question)
+    question = models.ForeignKey(Question)
     author = models.OneToOneField(User)    
