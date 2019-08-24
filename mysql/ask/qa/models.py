@@ -9,16 +9,14 @@ class Question(models.Model):
     likes = models.ManyToManyField(User, related_name='question_like_user')
     class Meta:
         ordering = ['-rating']
+    objects = QuestionManager()
 
 class QuestionManager():
-    def new():
-        import datetime
-        today_min = datetime.datetime.combine(datetime.date.today(), datetime.time.min)
-        today_max = datetime.datetime.combine(datetime.date.today(), datetime.time.max)
-        return Question.objects.get(added_at__range=(today_min, today_max))
+    def new(self):
+        return self.order_by('-added_at')
 
-    def popular():
-        return Question.objects
+    def popular(self):
+        return self.order_by('-rating')
 
 class Answer(models.Model):
     text = models.TextField()
