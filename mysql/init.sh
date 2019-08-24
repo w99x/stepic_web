@@ -12,5 +12,7 @@ sudo ln -sf $etcdir/gunicorn.py  /etc/gunicorn.d/gunicorn.py
 sudo ln -sf $etcdir/nginx.conf /etc/nginx/sites-enabled/default
 
 sudo /etc/init.d/nginx restart
-( cd ask && gunicorn  ask.wsgi:application -c $etcdir/gunicorn.py )
+( cd ask && gunicorn  ask.wsgi:application -c $etcdir/gunicorn.py& )
 sudo /etc/init.d/mysql restart
+
+mysql -uroot -e "create database stepicaskdb;"
