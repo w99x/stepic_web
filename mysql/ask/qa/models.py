@@ -5,7 +5,7 @@ class Question(models.Model):
     text = models.TextField()
     added_at = models.DateTimeField()
     rating = models.IntegerField()
-    author = models.OneToOneField(User)
+    author = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     likes = models.IntegerField()
     class Meta:
         ordering = ['-rating']
@@ -23,5 +23,5 @@ class QuestionManager():
 class Answer(models.Model):
     text = models.TextField()
     added_at = models.DateTimeField()
-    question = models.ForeignKey(Question)
-    author = models.OneToOneField(User)    
+    question = models.ForeignKey(Question, null=True, on_delete=models.SET_NULL)
+    author = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)    
