@@ -6,7 +6,7 @@ class Question(models.Model):
     added_at = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField()
     author = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
-    likes = models.ManyToManyField(User)
+    likes = models.ManyToManyField(User, related_name='question_like_user')
     class Meta:
         ordering = ['-rating']
 
