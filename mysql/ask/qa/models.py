@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 class Question(models.Model):
     title = models.CharField(max_length=250)
     text = models.TextField()
-    added_at = models.DateTimeField()
+    added_at = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField()
     author = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)
     likes = models.IntegerField()
@@ -22,6 +22,6 @@ class QuestionManager():
 
 class Answer(models.Model):
     text = models.TextField()
-    added_at = models.DateTimeField()
+    added_at = models.DateTimeField(auto_now_add=True)
     question = models.ForeignKey(Question, null=True, on_delete=models.SET_NULL)
     author = models.OneToOneField(User, null=True, on_delete=models.SET_NULL)    
