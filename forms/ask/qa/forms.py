@@ -24,19 +24,19 @@ class AskForm(forms.Form):
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
-    question = Question()
+    question = forms.IntegerField()
     
     def __init__ (self, *args, **kwargs):
-        question = kwargs.pop('question')
         super(AnswerForm, self).__init__(*args, **kwargs)
-        self.question = question
 
     def clean_text(self):
         if not self.cleaned_data['text']:
             raise forms.ValidationError("text cannot be empty", code=1)
         return self.cleaned_data['text']
     
-    def save(self):
-        answer = Answer(**self.cleaned_data)
+    def save(self, question_id):
+        question_id = self.cleaned_data.pop('question')
+        q = Question.objects.get(id=question_id)
+        answer = Answer(question=q, **self.cleaned_data)
         answer.save()
         return answer
