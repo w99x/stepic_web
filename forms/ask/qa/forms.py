@@ -20,7 +20,8 @@ class AskForm(forms.Form):
         return "Text: " + text        
     
     def save(self):
-        question = Question(**self.cleaned_data, author=self._author)
+        question = Question(**self.cleaned_data)
+	question.author = self._author
         question.save()
         return question
 
@@ -40,7 +41,8 @@ class AnswerForm(forms.Form):
     def save(self, question_id):
         question_id = self.cleaned_data.pop('question')
         q = Question.objects.get(id=question_id)
-        answer = Answer(question=q, **self.cleaned_data, author=self._author)
+        answer = Answer(question=q, **self.cleaned_data)
+	answer.author=self._author
         answer.save()
         return answer
 
