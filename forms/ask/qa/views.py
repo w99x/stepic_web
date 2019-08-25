@@ -45,12 +45,12 @@ def question(request, id):
     url = "/question/" + str(id) + "/"
     question = Question.objects.get(id=id)
     if request.method == "POST":         
-        form = AnswerForm(question, request.POST)         
+        form = AnswerForm(request.POST, question=question)         
         if form.is_valid():             
             answer = form.save()             
             return HttpResponseRedirect(url)     
     else:         
-        form = AnswerForm(question)     
+        form = AnswerForm(question=question)     
     return render(request, 'answer_form.html', { 'form': form, 'url': url })
 
  

@@ -25,8 +25,8 @@ class AskForm(forms.Form):
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
     
-    def __init__ (self, q, *args, **kwargs):
-        self.question = q
+    def __init__ (self, *args, **kwargs):
+        self.question = kwargs.pop('question')
         super(AnswerForm, self).__init__(*args, **kwargs)
 
     def clean_text(self):
