@@ -43,13 +43,14 @@ def ask(request):
 
 def question(request, id):
     url = "/question/" + str(id) + "/"
+    question = Question.objects.get(id=id)
     if request.method == "POST":         
-        form = AnswerForm(request.POST)         
+        form = AnswerForm(question, request.POST)         
         if form.is_valid():             
             answer = form.save()             
             return HttpResponseRedirect(url)     
     else:         
-        form = AnswerForm()     
+        form = AnswerForm(question)     
     return render(request, 'answer_form.html', { 'form': form, 'url': url })
 
  
