@@ -24,10 +24,12 @@ class AskForm(forms.Form):
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
+    question = Question()
     
     def __init__ (self, *args, **kwargs):
-        self.question = kwargs.pop('question')
+        question = kwargs.pop('question')
         super(AnswerForm, self).__init__(*args, **kwargs)
+        self.question = question
 
     def clean_text(self):
         if not self.cleaned_data['text']:
@@ -35,6 +37,6 @@ class AnswerForm(forms.Form):
         return self.cleaned_data['text']
     
     def save(self):
-        answer = Answer(question=self.question, **self.cleaned_data)
+        answer = Answer(**self.cleaned_data)
         answer.save()
         return answer
