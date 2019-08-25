@@ -1,9 +1,10 @@
 from django import forms
-from qa.models import Question, Answer
+from qa.models import Question, Answer, User
 
 class AskForm(forms.Form):
     title = forms.CharField(max_length=100)
     text = forms.CharField(widget=forms.Textarea)
+    _author = User()
 
     def clean_title(self):
         title = self.cleaned_data['title']
@@ -18,14 +19,15 @@ class AskForm(forms.Form):
         return "Text: " + text        
     
     def save(self):
-        question = Question(**self.cleaned_data)
+        question = Question(**self.cleaned_data, author=self._author)
         question.save()
         return question
 
 class AnswerForm(forms.Form):
     text = forms.CharField(widget=forms.Textarea)
     question = forms.IntegerField()
-    
+    _author = User()
+
     def __init__ (self, *args, **kwargs):
         super(AnswerForm, self).__init__(*args, **kwargs)
 
@@ -37,6 +39,33 @@ class AnswerForm(forms.Form):
     def save(self, question_id):
         question_id = self.cleaned_data.pop('question')
         q = Question.objects.get(id=question_id)
-        answer = Answer(question=q, **self.cleaned_data)
+        answer = Answer(question=q, **self.cleaned_data, author=self._author)
         answer.save()
         return answer
+
+class SignupForm(forms.Form):
+    username = forms.CharField()
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
+        
+    def save(self):
+        user = User(**self.cleaned_data)
+        user.save()
+        return user
+
+class LoginForm(forms.Form):
+    username = forms.CharField()
+    password = forms.CharField(widget=forms.PasswordInput)
+
+    def clean(self):
+        try:
+            user=User.objects.get(**self.cleaned_data)
+            self._user = user
+        except User.DoesNotExist:
+            raise forms.ValidationError("Invalid login/password", code=1)
+    
+    def save(self):
+        import uuid
+        session = Session(user=self._user, key=str(uuid.uuid4()), expires=datetime.now() + timedelta(days=5))
+        session.save
+        return session 

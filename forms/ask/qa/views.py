@@ -31,9 +31,13 @@ def popular(request):
 
 from qa.forms import *
 def ask(request):
+    user = request.author
+    if user is None:
+        return HttpResponse('Unauthorized', status=401)
     if request.method == "POST":         
         form = AskForm(request.POST)         
-        if form.is_valid():             
+        if form.is_valid():
+            form._author = user
             question = form.save()             
             url = "/question/" + str(question.id) + "/"
             return HttpResponseRedirect(url)     
@@ -42,11 +46,15 @@ def ask(request):
     return render(request, 'ask_form.html', { 'form': form })
 
 def question(request, id):
+    user = request.author
+    if user is None:
+        return HttpResponse('Unauthorized', status=401)
     url = "/question/" + str(id) + "/"
-    question = Question.objects.get(id=id)
+    question = Question.objects.get(id=id, author=user)
     if request.method == "POST":         
         form = AnswerForm(request.POST)
-        if form.is_valid():             
+        if form.is_valid():
+            form._author = user
             answer = form.save(id)             
             return HttpResponseRedirect(url)     
     else:         
@@ -54,3 +62,42 @@ def question(request, id):
     return render(request, 'answer_form.html', { 'form': form, 'url': url })
 
  
+def signup(request):
+    if request.method == "POST":         
+        form = SignupForm(request.POST)         
+        if form.is_valid():             
+            user = form.save()
+            import uuid
+            session = Session(user=user, key=str(uuid.uuid4()), expires=datetime.now() + timedelta(days=5))
+            url = request.POST.get('continue', '/')
+            response = HttpResponseRedirect(url)
+            response.set_cookie(
+                'sessionid', 
+                session.key,                 
+                httponly=True,                
+                expires = session.expires             
+            )     
+            return response
+    else:         
+        form = SignupForm()     
+    return render(request, 'singup_form.html', { 'form': form })
+
+
+def login(request):
+    if request.method == "POST":         
+        form = LoginForm(request.POST)         
+        if form.is_valid():             
+            session = form.save()             
+            url = request.POST.get('continue', '/')
+            response = HttpResponseRedirect(url)
+            response.set_cookie(
+                'sessionid', 
+                session.key,                 
+                httponly=True,                
+                expires = session.expires             
+            )
+            return response
+    else:         
+        form = LoginForm()     
+    return render(request, 'login_form.html', { 'form': form })
+
