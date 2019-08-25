@@ -49,23 +49,12 @@ class SignupForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput)
         
     def save(self):
-        user = User(**self.cleaned_data)
-        user.save()
+        user = User.objects.create(**self.cleaned_data)
         return user
 
 class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
-    def clean(self):
-        try:
-            user=User.objects.get(**self.cleaned_data)
-            self._user = user
-        except User.DoesNotExist:
-            raise forms.ValidationError("Invalid login/password", code=1)
-    
-    def save(self):
-        import uuid
-        session = Session(user=self._user, key=str(uuid.uuid4()), expires=datetime.now() + timedelta(days=5))
-        session.save
-        return session 
+    def save(self, request):
+        pass 

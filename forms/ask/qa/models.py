@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class QuestionManager(models.Manager):
     def new(self):
@@ -6,16 +7,6 @@ class QuestionManager(models.Manager):
 
     def popular(self):
         return self.order_by('-rating')
-
-class User(models.Model):
-    username = models.CharField(max_length=250)
-    email = models.CharField(max_length=250)
-    password = models.CharField(max_length=250)
-
-class Session(models.Model):
-    key = models.CharField(max_length=250, unique=True)
-    user = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    expires = models.DateTimeField()
 
 class Question(models.Model):
     title = models.CharField(max_length=250)

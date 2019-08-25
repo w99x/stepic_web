@@ -26,8 +26,8 @@ urlpatterns = [
     url(r'^question/(?P<id>\d+)$', question ),
     url(r'^ask/', ask),
 
-    url(r'^login/', test),
-    url(r'^signup/', test),
+    url(r'^login/', login),
+    url(r'^signup/', signup),
     url(r'^new/',test),
     
 ]

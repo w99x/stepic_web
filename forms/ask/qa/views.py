@@ -31,13 +31,13 @@ def popular(request):
 
 from qa.forms import *
 def ask(request):
-    user = request.author
-    if user is None:
+    if not request.user.is_authenticated:
         return HttpResponse('Unauthorized', status=401)
+
     if request.method == "POST":         
         form = AskForm(request.POST)         
         if form.is_valid():
-            form._author = user
+            form._author = request.user
             question = form.save()             
             url = "/question/" + str(question.id) + "/"
             return HttpResponseRedirect(url)     
@@ -46,15 +46,15 @@ def ask(request):
     return render(request, 'ask_form.html', { 'form': form })
 
 def question(request, id):
-    user = request.author
-    if user is None:
+    if not request.user.is_authenticated:
         return HttpResponse('Unauthorized', status=401)
+    
     url = "/question/" + str(id) + "/"
-    question = Question.objects.get(id=id, author=user)
+    question = Question.objects.get(id=id, author=request.user)
     if request.method == "POST":         
         form = AnswerForm(request.POST)
         if form.is_valid():
-            form._author = user
+            form._author = request.user
             answer = form.save(id)             
             return HttpResponseRedirect(url)     
     else:         
@@ -67,15 +67,12 @@ def signup(request):
         form = SignupForm(request.POST)         
         if form.is_valid():             
             user = form.save()
-            import uuid
-            session = Session(user=user, key=str(uuid.uuid4()), expires=datetime.now() + timedelta(days=5))
             url = request.POST.get('continue', '/')
             response = HttpResponseRedirect(url)
             response.set_cookie(
                 'sessionid', 
-                session.key,                 
-                httponly=True,                
-                expires = session.expires             
+                request.session.session_key,                 
+                httponly=True             
             )     
             return response
     else:         
@@ -87,16 +84,22 @@ def login(request):
     if request.method == "POST":         
         form = LoginForm(request.POST)         
         if form.is_valid():             
-            session = form.save()             
-            url = request.POST.get('continue', '/')
-            response = HttpResponseRedirect(url)
-            response.set_cookie(
-                'sessionid', 
-                session.key,                 
-                httponly=True,                
-                expires = session.expires             
-            )
-            return response
+            user = form.save(request)
+            username = request.POST['username']
+            password = request.POST['password']
+            from django.contrib.auth import authenticate, login
+            user = authenticate(request, username=username, password=password)
+            if user is not None:             
+                login(request, user)
+                url = request.POST.get('continue', '/')
+                response = HttpResponseRedirect(url)
+                response.set_cookie(
+                    'sessionid', 
+                    request.session.session_key,                 
+                    httponly=True             
+                )
+                return response
+            #return HttpResponse('Login/password', status=401)
     else:         
         form = LoginForm()     
     return render(request, 'login_form.html', { 'form': form })
