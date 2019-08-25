@@ -1,0 +1,17 @@
+<ol>
+{% for question in questions %}
+    <li><a href="{{ question_base_url }}/{{question.id}}/" >{{ question.title }} </a></li>
+{% endfor %}
+</ol>
+
+<nav><ul class="pagination">
+{% for p in paginator.page_range %}
+    {% if p.number == page.number %}    
+    <li class="active">
+    {% else %}
+    <li>
+    {% endif %}
+        <a href="{{ paginator.baseurl }}{{ forloop.counter }}">     {{ forloop.counter }}</a>     
+    </li>
+{% endfor %}
+</ul></nav>
